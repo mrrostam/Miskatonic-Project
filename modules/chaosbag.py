@@ -1,19 +1,23 @@
 import random
+import constant
+
 
 class Token:
-    def __init__(self, name):
+    def __init__(self, name, parentBag=None):
         self.name = name
+        self.parentBag = parentBag
 
     def __repr__(self):
         return self.name
 
 
 class ChaosBag:
-    def __init__(self, t=[("+1", 1), ("0", 2), ("-1", 3), ("-2", 2), ("-3", 1), ("-4", 1), ("-5", 0), ("-6", 0), ("-7", 0), ("-8", 0), ("Skull", 2), ("Cultist", 1), ("Elder Thing", 0), ("Tablet", 1), ("Tentacles", 1), ("Elder Sign", 1)]):
+    def __init__(self, t=constant.default_tokens, parentScenario=None):
+        self.parentScenario = parentScenario
         self.tokens = []
         for i in t:
-            for j in range(i[1]):
-                self.tokens.append(Token(i[0]))
+            for _ in range(i[1]):
+                self.tokens.append(Token(i[0], self))
 
     def get_token(self, num=1):
         return random.sample(self.tokens, num)
@@ -39,7 +43,9 @@ class ChaosBag:
 
 
 if __name__ == '__main__':
+    import sys
     chaos_bag = ChaosBag()
     print(chaos_bag)
     token = chaos_bag.get_token()
     print(token)
+    # print(sys.getsizeof(chaos_bag))

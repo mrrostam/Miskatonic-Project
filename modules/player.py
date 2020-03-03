@@ -3,14 +3,14 @@ import os
 from collections import OrderedDict
 
 import chaosbag
-from deck import *
+import mydeck
 import constant
 import scenarios
 
 
 class Player:
-    def __init__(self, name="Player", investigator="Roland Banks", deck="1"):
-        script_dir = os.path.dirname(__file__)
+    def __init__(self, name="Player", investigator="Roland Banks", deck="1", parentScenario=None):
+        script_dir = os.path.dirname('..')
         abs_file_path = os.path.join(script_dir, constant.INV_DB)
         with open(abs_file_path, "r") as read_file:
             inv_list = json.load(read_file)
@@ -21,13 +21,16 @@ class Player:
         abs_file_path = os.path.join(script_dir, f"db/deck/{deck}.json")
         with open(abs_file_path, "r") as read_file:
             deck = json.load(read_file)
-
-        self.deck = Deck()
+        self.parentScenario = parentScenario
+        self.deck = mydeck.Deck()
         self.resource = constant.INIT_RES
         self.Exhausted = False
         self.hand = []
-        for i in range(constant.INIT_HAND):
+        for _ in range(constant.INIT_HAND):
             self.draw()
+
+        self._damage = 0
+        self._horror = 0
 
     def showHand(self):
         print(self.hand)
@@ -62,28 +65,51 @@ class Player:
 
     def skillTest(self, test_type, difficulty, chaos_bag):
         token = str(chaos_bag.get_token()[0])
-        if (token == "Skull"):
-            modified_skill_value = self.investigator[test_type] + 0
-        elif (token == "Cultist"):
-            modified_skill_value = self.investigator[test_type] + 0
-        elif (token == "Elder Thing"):
-            modified_skill_value = self.investigator[test_type] + 0
-        elif (token == "Tablet"):
-            modified_skill_value = self.investigator[test_type] + 0
+        scenario_token_list = ["Skull" , "Cultist" , "Elder Thing" , "Tablet"]
+        print(token)
+        if token in scenario_token_list:
+            success, modified_skill_value = self.parentScenario.scenarioToken(self, token, test_type, difficulty)
         elif (token == "Tentacles"):
-            modified_skill_value = 0
+            success, modified_skill_value = -1, 0
         elif (token == "Elder Sign"):
-            modified_skill_value = self.investigator[test_type]
+            success, modified_skill_value = self.investigatorToken()
         else:
             modified_skill_value = self.investigator[test_type] + int(token)
-        if modified_skill_value >= difficulty:
-            return token, 0
-        else:
-            return token, -1
+            if modified_skill_value >= difficulty:
+                success = 0
+            else:
+                success = -1
+        return token, success
 
-    @property
+    def investigatorToken(self):
+        return 1, 00
+
     def location(self):
         return self.location
+
+    @property
+    def horror(self):
+        return self._horror
+
+    @property
+    def damage(self):
+        return self._damage
+
+    @horror.setter
+    def horror(self, value):
+        if value >= self.investigator["sanity"]:
+            print("You are dead!")
+            self._horror = value
+        else:
+            self._horror = value
+
+    @damage.setter
+    def damage(self, value):
+        if value >= self.investigator["health"]:
+            print("You are dead!")
+            self._damage = value
+        else:
+            self._damage = value
 
 
 if __name__ == '__main__':

@@ -2,13 +2,13 @@ import json
 import os
 import random
 
-from card import *
+from mycard import *
 import constant
 
 
 class Deck:
     def __init__(self, id="1"):
-        script_dir = os.path.dirname(__file__)
+        script_dir = os.path.dirname('..')
         abs_file_path = os.path.join(script_dir, f"db/deck/{id}.json")
         with open(abs_file_path, "r") as read_file:
             deck_raw = json.load(read_file)
@@ -16,13 +16,15 @@ class Deck:
         with open(abs_file_path, "r") as read_file:
             card_raw = json.load(read_file)
         deck_cards = deck_raw["slots"]
+        self.id = id
         self.cards = []
         for card_id, card_num in deck_cards.items():
             for card_info in card_raw:
                 if card_id == card_info["code"]:
                     for i in range(card_num):
-                        self.cards.append(Card(card_info))
+                        self.cards.append(Card(card_info, self))
         self.shuffle()
+        self.numCards = len(self.cards)
 
     def __str__(self):
         s = ""
@@ -39,6 +41,7 @@ class Deck:
             self.cards[i], self.cards[r] = self.cards[r], self.cards[i]
 
     def drawCard(self):
+        self.numCards -= 1
         return self.cards.pop()
 
 
