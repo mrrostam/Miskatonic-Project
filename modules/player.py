@@ -10,7 +10,7 @@ import scenarios
 
 class Player:
     def __init__(self, name="Player", investigator="Roland Banks", deck="1", parentScenario=None):
-        script_dir = os.path.dirname('..')
+        script_dir = os.path.dirname(os.path.dirname(__file__))
         abs_file_path = os.path.join(script_dir, constant.INV_DB)
         with open(abs_file_path, "r") as read_file:
             inv_list = json.load(read_file)
@@ -63,8 +63,8 @@ class Player:
     def fight(self):
         pass
 
-    def skillTest(self, test_type, difficulty, chaos_bag):
-        token = str(chaos_bag.get_token()[0])
+    def skillTest(self, test_type, difficulty):
+        token = str(self.parentScenario.chaosbag.get_token()[0])
         scenario_token_list = ["Skull" , "Cultist" , "Elder Thing" , "Tablet"]
         print(token)
         if token in scenario_token_list:
@@ -113,9 +113,9 @@ class Player:
 
 
 if __name__ == '__main__':
-    player1 = Player()
-    chaos = chaosbag.ChaosBag()
+    scenarios = scenarios.Scenario()
+    player1 = Player("player", "Roland Banks", 1, scenarios)
     print(player1.getData())
     player1.showHand()
     print(player1.gainResource())
-    print(player1.skillTest("skill_intellect", 3, chaos))
+    print(player1.skillTest("skill_intellect", 3))

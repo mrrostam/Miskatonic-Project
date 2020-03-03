@@ -8,7 +8,7 @@ import constant
 
 class Deck:
     def __init__(self, id="1"):
-        script_dir = os.path.dirname('..')
+        script_dir = os.path.dirname(os.path.dirname(__file__))
         abs_file_path = os.path.join(script_dir, f"db/deck/{id}.json")
         with open(abs_file_path, "r") as read_file:
             deck_raw = json.load(read_file)
