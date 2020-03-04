@@ -7,7 +7,7 @@ import constant
 
 
 class Deck:
-    def __init__(self, id="1"):
+    def __init__(self, id="1", parentInvestigator=None):
         script_dir = os.path.dirname(os.path.dirname(__file__))
         abs_file_path = os.path.join(script_dir, f"db/deck/{id}.json")
         with open(abs_file_path, "r") as read_file:
@@ -21,7 +21,7 @@ class Deck:
         for card_id, card_num in deck_cards.items():
             for card_info in card_raw:
                 if card_id == card_info["code"]:
-                    for i in range(card_num):
+                    for _ in range(card_num):
                         self.cards.append(Card(card_info, self))
         self.shuffle()
         self.numCards = len(self.cards)

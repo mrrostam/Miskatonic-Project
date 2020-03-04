@@ -65,8 +65,7 @@ class Player:
 
     def skillTest(self, test_type, difficulty):
         token = str(self.parentScenario.chaosbag.get_token()[0])
-        scenario_token_list = ["Skull" , "Cultist" , "Elder Thing" , "Tablet"]
-        print(token)
+        scenario_token_list = ["Skull", "Cultist", "Elder Thing", "Tablet"]
         if token in scenario_token_list:
             success, modified_skill_value = self.parentScenario.scenarioToken(self, token, test_type, difficulty)
         elif (token == "Tentacles"):

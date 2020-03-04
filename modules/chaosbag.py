@@ -48,4 +48,3 @@ if __name__ == '__main__':
     print(chaos_bag)
     token = chaos_bag.get_token()
     print(token)
-    # print(sys.getsizeof(chaos_bag))
