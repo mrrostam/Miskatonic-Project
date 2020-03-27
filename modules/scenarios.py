@@ -45,7 +45,7 @@ class Scenario():
                     self.location.append(Location(scenario_card, self))
         self.setup()
 
-    def setup():
+    def setup(self):
         pass
 
     def scenarioToken(self, player, token , test_type, difficulty):
